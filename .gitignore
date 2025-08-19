@@ -1,0 +1,64 @@
+# Python cache/compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+.eggs/
+src/__pycache__/
+# Virtual environment
+venv/
+.env
+env/
+.venv/
+
+# IDE / Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+*.out
+
+# Migrations (optional - if you want to track only empty migration folder)
+migrations/**/__pycache__/
+migrations/**/.*  # Alembic
+!migrations/env.py
+!migrations/versions/
+
+# FastAPI / Uvicorn
+*.pid
+
+# Coverage / Testing
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+.cache/
+
+# Distribution / Packaging
+build/
+dist/
+*.manifest
+*.spec
+
+# Jupyter notebooks
+.ipynb_checkpoints
+
+# Environment variables
+.env.*
+.envrc
+
+# Local configs / secrets
+*.sqlite3
+instance/
+secrets/
