@@ -1,8 +1,9 @@
-from src.auth.models import User
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from src.auth.schemas import UserCreateModel
 from sqlmodel import select
+
+from src.auth.schemas import UserCreateModel
 from src.auth.utils import generate_passwd_hash
+from src.db.models import User
 
 
 class UserService:

@@ -1,25 +1,31 @@
-from fastapi import APIRouter, status, Depends
-from fastapi.exceptions import HTTPException
 from typing import List
-from src.books.schemas import Book, BookUpdateModel, BookCreateModel
-from src.db.main import get_session
-from sqlmodel.ext.asyncio.session import AsyncSession
-from src.books.services import BookService
-from src.auth.dependencies import AccessTokenBearer, RoleChecker
 
-book_route = APIRouter()
+from fastapi import APIRouter, Depends, status
+from fastapi.exceptions import HTTPException
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+from src.auth.dependencies import AccessTokenBearer, RoleChecker
+from src.books.schemas import (
+    Book, BookCreateModel, BookUpdateModel, BookDetailsModel
+)
+from src.books.services import BookService
+from src.db.main import get_session
+
+book_router = APIRouter()
 book_service = BookService()
 access_token_bearer = AccessTokenBearer()
 role_checker = Depends(RoleChecker(['admin', 'user']))
 
 
-@book_route.get("/{book_id}", response_model=Book)
+@book_router.get("/{book_id}", response_model=BookDetailsModel)
 async def get_book(
     book_id: str,
     session: AsyncSession = Depends(get_session),
     user_details=Depends(access_token_bearer),
 ) -> dict:
+    print(user_details)
     book = await book_service.get_book(book_id, session)
+    print(book)
     if book:
         return book
     else:
@@ -29,12 +35,11 @@ async def get_book(
         )
 
 
-@book_route.get("/", response_model=List[Book])
+@book_router.get("/", response_model=List[Book])
 async def get_books(
     session: AsyncSession = Depends(get_session),
     user_details=Depends(access_token_bearer),
 ) -> dict:
-    print("User Details -> ", user_details)
     books = await book_service.get_books(session)
     if books:
         return books
@@ -44,7 +49,7 @@ async def get_books(
         )
 
 
-@book_route.get(
+@book_router.get(
     "/user/{user_id}",
     response_model=List[Book],
     dependencies=[role_checker]
@@ -63,7 +68,7 @@ async def get_user_book_submission(
         )
 
 
-@book_route.post(
+@book_router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
     response_model=Book,
@@ -79,7 +84,7 @@ async def create_book(
     return new_book
 
 
-@book_route.patch(
+@book_router.patch(
     "/{book_id}",
     response_model=Book,
     dependencies=[role_checker]
@@ -101,7 +106,7 @@ async def update_book(
         )
 
 
-@book_route.delete(
+@book_router.delete(
     "/{book_id}",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[role_checker]

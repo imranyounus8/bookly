@@ -1,6 +1,11 @@
-from pydantic import BaseModel, Field
-from datetime import datetime
 import uuid
+from datetime import datetime
+from typing import List
+
+from pydantic import BaseModel, Field
+
+from src.books.schemas import Book
+from src.reviews.schemas import ReviewModel
 
 
 class UserCreateModel(BaseModel):
@@ -23,6 +28,11 @@ class UserModel(BaseModel):
     is_verified: bool
     created_at: datetime
     updated_at: datetime
+
+
+class UserBooksModel(UserModel):
+    books: List[Book]
+    reviews: List[ReviewModel]
 
 
 class UserLoginModel(BaseModel):

@@ -1,29 +1,31 @@
-from sqlmodel.ext.asyncio.session import AsyncSession
-from src.books.schemas import BookCreateModel, BookUpdateModel
-from .models import BookModel
-from sqlmodel import select, desc
-from datetime import datetime
 import uuid
+from datetime import datetime
+
+from sqlmodel import desc, select
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+from src.books.schemas import BookCreateModel, BookUpdateModel
+from src.db.models import Book
 
 
 class BookService:
     async def get_books(self, session: AsyncSession):
-        statement = select(BookModel).order_by(desc(BookModel.created_at))
+        statement = select(Book).order_by(desc(Book.created_at))
         result = await session.exec(statement)
         return result.all()
 
     async def get_user_books(self, user_id: str, session: AsyncSession):
         statement = (
-            select(BookModel)
-            .where(BookModel.user_id == user_id)
-            .order_by(desc(BookModel.created_at))
+            select(Book)
+            .where(Book.user_id == user_id)
+            .order_by(desc(Book.created_at))
         )
         result = await session.exec(statement)
         return result.all()
 
     async def get_book(self, book_id: str, session: AsyncSession):
         book_id = uuid.UUID(book_id)
-        statement = select(BookModel).where(BookModel.id == book_id)
+        statement = select(Book).where(Book.id == book_id)
         result = await session.exec(statement)
         return result.first()
 
@@ -31,7 +33,7 @@ class BookService:
         self, book_data: BookCreateModel, user_id: str, session: AsyncSession
     ):
         book_data_dict = book_data.model_dump()
-        new_book = BookModel(**book_data_dict)
+        new_book = Book(**book_data_dict)
         new_book.published_date = datetime.strptime(
             book_data.published_date, "%Y-%m-%d"
         )

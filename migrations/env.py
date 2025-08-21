@@ -1,17 +1,16 @@
 import asyncio
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from sqlmodel import SQLModel
 
-from alembic import context
-
-from src.auth.models import User
-from src.books.models import BookModel
-
 from src.config import Config
+
+# from src.db.models import User, Book
+
 
 database_url = Config.DATABASE_URL
 
