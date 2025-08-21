@@ -24,3 +24,34 @@ async def create_review(
         session=session
     )
     return new_review
+
+
+@review_router.get('/')
+async def retrieve_reviews(
+    session: AsyncSession = Depends(get_session)
+):
+    reviews = await review_service.get_reviews(session)
+    return reviews
+
+
+@review_router.get('/{review_id}')
+async def retrieve_review(
+    review_id: str,
+    session: AsyncSession = Depends(get_session)
+):
+    review = await review_service.get_review(review_id, session)
+    return review
+
+
+@review_router.delete('/{review_id}')
+async def delete_a_review(
+    review_id: str,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    await review_service.delete_review(
+        review_id=review_id,
+        user_email=current_user.email,
+        session=session
+    )
+    return None
