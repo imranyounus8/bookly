@@ -7,6 +7,7 @@ from src.books.routes import book_router
 from src.reviews.routes import review_router
 from src.tags.routes import tags_router
 from src.db.main import init_db
+from src.middleware import register_middleware
 
 
 @asynccontextmanager
@@ -23,6 +24,9 @@ app = FastAPI(
     description="A REST API for book review web service",
     version=version
 )
+
+register_middleware(app)
+
 
 app.include_router(
     auth_router, prefix=f"/api/{version}/auth", tags=["auth"]

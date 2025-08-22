@@ -23,9 +23,8 @@ async def get_book(
     session: AsyncSession = Depends(get_session),
     user_details=Depends(access_token_bearer),
 ) -> dict:
-    print(user_details)
+    # print(user_details)
     book = await book_service.get_book(book_id, session)
-    print(book)
     if book:
         return book
     else:
