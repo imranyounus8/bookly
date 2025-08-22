@@ -47,6 +47,37 @@ class User(SQLModel, table=True):
         return f"<User {self.username}>"
 
 
+class BookTag(SQLModel, table=True):
+    book_id: uuid.UUID = Field(
+        default=None, foreign_key="books.id", primary_key=True
+    )
+    tag_id: uuid.UUID = Field(
+        default=None, foreign_key="tags.id", primary_key=True
+    )
+
+
+class Tag(SQLModel, table=True):
+
+    __tablename__ = "tags"
+    id: uuid.UUID = Field(
+        sa_column=Column(
+            pg.UUID, primary_key=True, nullable=False, default=uuid.uuid4
+        )
+    )
+    name: str = Field(sa_column=Column(pg.VARCHAR, nullable=False))
+    created_at: datetime = Field(
+        sa_column=Column(pg.TIMESTAMP, default=datetime.now)
+    )
+    books: List["Book"] = Relationship(
+        link_model=BookTag,
+        back_populates="tags",
+        sa_relationship_kwargs={'lazy': "selectin"}
+    )
+
+    def __repr__(self) -> str:
+        return f"<Tag {self.name}>"
+
+
 class Book(SQLModel, table=True):
 
     __tablename__ = "books"
@@ -74,6 +105,12 @@ class Book(SQLModel, table=True):
     user: Optional[User] = Relationship(back_populates="books")
     reviews: List["Review"] = Relationship(
         back_populates="book", sa_relationship_kwargs={"lazy": "selectin"}
+    )
+
+    tags: List[Tag] = Relationship(
+        link_model=BookTag,
+        back_populates="books",
+        sa_relationship_kwargs={"lazy": "selectin"},
     )
 
     def __repr__(self):

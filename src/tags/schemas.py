@@ -1,5 +1,18 @@
 from pydantic import BaseModel
+import uuid
+from datetime import datetime
+from typing import List
 
 
-class TagsModel(BaseModel):
-    pass
+class TagModel(BaseModel):
+    id: uuid.UUID
+    name: str
+    created_at: datetime
+
+
+class TagCreateModel(BaseModel):
+    name: str
+
+
+class TagAddModel(BaseModel):
+    tags: List[TagCreateModel]
